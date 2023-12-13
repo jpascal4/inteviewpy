@@ -49,3 +49,49 @@ def create_mailtm_account(address, password):
 
     r = _make_mailtm_request(_acc_req)
     assert len(r['id']) > 0
+
+#functon to list mail headers
+def list_headers():
+	def head_req():
+		return requests.head("https://api.mail.tm/accounts", data=account)
+	res = _make_mailtm_request(head_req)
+	return [i['accounts'] for i in res]
+
+#function to handle pagination
+def pagination():
+	def parser():
+		return requests.get("https://api.mail.tm/accounts", data=account, headers=list_headers())
+	res = _make_mailtm_request(parser)
+	for i in res:
+		print(res[i], i)
+
+
+#function to read an email
+def read_mail():
+	def fetch_mail():
+		return request.get("https://api.mail.tm/messages" data=account, header=MAILTM_HEADERS)
+	resp = _make_mailtm_request(fetch_mail)
+	return [i['messages'] for i in resp]
+
+
+def main():
+	#call create a new account function
+	try:
+		new_account = create_mailtm_account("kariukiallan850@gmail.com", 1234)
+	except error:
+		print("Account creation unsuccessful")
+	
+	#call list headers of newly created account function
+	list_headers()
+	#call pagination of headers function
+	pagination()
+	#call read mail functon
+	mail_content = read_mail().time()
+	#loop through mail content to check if new mail arrived and update server
+	for i in mail_content:
+		if mail_content != read_mail().time:
+			json.dump(read_mail().time)
+
+if __name__ == "main":
+	main()
+
